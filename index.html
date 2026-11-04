@@ -1,0 +1,2592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Malevolent Kitchen</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #000000;
+  --bg-translucent: rgba(10, 11, 14, 0.7);
+  --panel: rgba(14, 15, 20, 0.65);
+  --panel-header: rgba(10, 11, 15, 0.85);
+  --ink: #f3f4f6;
+  --muted: #8e95a5;
+  --faint: #474e5d;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --code-bg: rgba(6, 7, 9, 0.6);
+  --err: #f87171;
+  --warn: #fbbf24;
+  --success: #34d399;
+  --info: #60a5fa;
+  --font-mono: 'JetBrains Mono', SFMono-Regular, Consolas, Menlo, monospace;
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after { box-sizing: inherit; }
+
+html { height: 100%; }
+
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(12, 13, 16, 0.75) 0%, rgba(2, 2, 4, 0.96) 100%);
+  color: var(--ink);
+  font: 13.5px/1.5 var(--font-sans);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--bg-translucent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--line);
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Language Selector */
+.lang-selector-wrap {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lang-btn:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.lang-btn.active {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.lang-btn svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* Web Mode Toggle */
+.web-mode-pill {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 2px;
+  margin-left: 4px;
+}
+
+.web-mode-pill.visible { display: flex; }
+
+.web-mode-btn {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.web-mode-btn:hover { color: var(--ink); }
+
+.web-mode-btn.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Middle Brand: Pure Clean Logo, No Borders, Bright */
+.brand-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+  text-decoration: none;
+}
+
+.brand-center:hover {
+  transform: translateX(-50%) scale(1.03);
+}
+
+.sukuna-logo-pure {
+  height: 42px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 18px rgba(255, 255, 255, 0.5));
+  transition: all 0.25s ease;
+}
+
+.brand-center:hover .sukuna-logo-pure {
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 1)) drop-shadow(0 0 28px rgba(255, 255, 255, 0.85));
+  transform: scale(1.06);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-title {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #ffffff;
+}
+
+.brand-sub {
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* Header Right Actions */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Auto-Run Toggle Label */
+.autorun-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 5px 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.18s ease;
+  height: 32px;
+}
+
+.autorun-toggle:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.autorun-toggle input[type="checkbox"] {
+  accent-color: #34d399;
+  cursor: pointer;
+  margin: 0;
+  width: 14px;
+  height: 14px;
+}
+
+.autorun-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
+  transition: all 0.2s ease;
+}
+
+.autorun-toggle.off {
+  opacity: 0.65;
+}
+
+.autorun-toggle.off .autorun-dot {
+  background: #64748b;
+  box-shadow: none;
+}
+
+/* Layout Switcher */
+.layout-switcher {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.layout-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 4px;
+  width: 30px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #8c96a8;
+  transition: all 0.18s ease;
+}
+
+.layout-btn:hover {
+  color: #dbe2ef;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.layout-btn.active {
+  background: #232630;
+  border-color: #3e4456;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.layout-btn svg { width: 17px; height: 17px; }
+
+/* Ghost Buttons */
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 7px;
+  padding: 5px 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  transition: all 0.18s ease;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+/* RUN Button */
+.btn-run {
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  color: #000000;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-radius: 7px;
+  padding: 0 16px;
+  height: 32px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.15);
+  transition: all 0.18s ease;
+}
+
+.btn-run:hover {
+  background: #e2e8f0;
+  border-color: #e2e8f0;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-run:active {
+  transform: translateY(1px);
+}
+
+.btn-run svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* Main Workspace */
+main {
+  --split: 50%;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Layouts */
+main.layout-right {
+  grid-template-columns: var(--split) 8px 1fr;
+  grid-template-rows: 1fr;
+}
+main.layout-right .editor-pane { order: 1; }
+main.layout-right .divider-main { order: 2; cursor: col-resize; }
+main.layout-right .output-pane { order: 3; }
+
+main.layout-left {
+  grid-template-columns: var(--split) 8px 1fr;
+  grid-template-rows: 1fr;
+}
+main.layout-left .output-pane { order: 1; }
+main.layout-left .divider-main { order: 2; cursor: col-resize; }
+main.layout-left .editor-pane { order: 3; }
+
+main.layout-bottom {
+  grid-template-columns: 1fr;
+  grid-template-rows: var(--split) 8px 1fr;
+}
+main.layout-bottom .editor-pane { order: 1; }
+main.layout-bottom .divider-main { order: 2; cursor: row-resize; }
+main.layout-bottom .output-pane { order: 3; }
+
+main.layout-split {
+  grid-template-columns: var(--split) 8px 1fr;
+  grid-template-rows: 1fr;
+}
+main.layout-split .editor-pane { order: 1; }
+main.layout-split .divider-main { order: 2; cursor: col-resize; }
+main.layout-split .output-pane { order: 3; }
+
+/* Panes */
+.pane {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.pane-header {
+  height: 36px;
+  background: var(--panel-header);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  flex-shrink: 0;
+}
+
+.pane-tabs {
+  display: flex;
+  height: 100%;
+}
+
+.tab-btn {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0 14px;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.tab-btn:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pane-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+/* Auto-fill Dropdown Menu */
+.autofill-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.autofill-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.autofill-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.autofill-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: rgba(14, 16, 22, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7);
+  min-width: 220px;
+  padding: 6px;
+  z-index: 100;
+  display: none;
+}
+
+.autofill-menu.open {
+  display: block;
+}
+
+.autofill-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 6px 8px 2px;
+}
+
+.autofill-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 6px 8px;
+  border-radius: 4px;
+  color: #e2e8f0;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.autofill-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.autofill-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 6px 4px;
+}
+
+.autofill-snippets-hint {
+  padding: 4px 8px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.autofill-snippets-hint div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.autofill-snippets-hint code {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+
+
+/* Autocomplete IntelliSense Popup */
+.autocomplete-popup {
+  position: absolute;
+  z-index: 1000;
+  background: rgba(10, 12, 16, 0.96);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  width: 280px;
+  max-height: 260px;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  top: 40px;
+  left: 60px;
+}
+
+.autocomplete-popup.open {
+  display: flex;
+}
+
+.autocomplete-list {
+  overflow-y: auto;
+  max-height: 215px;
+  padding: 4px;
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+  user-select: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.autocomplete-item .tag-name {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.autocomplete-item .tag-desc {
+  color: var(--muted);
+  font-size: 10.5px;
+  font-family: var(--font-sans);
+}
+
+
+
+/* Editor Container */
+.editor-wrapper {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  background: var(--code-bg);
+}
+
+/* Line Numbers Gutter */
+.line-numbers {
+  width: 44px;
+  padding: 14px 6px 14px 0;
+  text-align: right;
+  font: 12.5px/1.65 var(--font-mono);
+  color: var(--faint);
+  background: rgba(0, 0, 0, 0.35);
+  border-right: 1px solid var(--line);
+  user-select: none;
+  overflow: hidden;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+/* Code Textareas - Subtle atmospheric background that does not overpower code */
+.code-editors-box {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.code-editors-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('sukuna_clean.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 320px auto;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.35));
+  transition: opacity 0.3s ease;
+}
+
+.editor-wrapper:hover .code-editors-box::before {
+  opacity: 0.14;
+}
+
+textarea.code-area {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border: 0;
+  margin: 0;
+  padding: 14px 14px;
+  background: transparent;
+  color: #e6ebf5;
+  font: 12.5px/1.65 var(--font-mono);
+  tab-size: 2;
+  white-space: pre;
+  overflow: auto;
+  outline: none;
+  display: none;
+  caret-color: #ffffff;
+  z-index: 1;
+}
+
+textarea.code-area.active { display: block; }
+
+/* Dividers */
+.divider {
+  background: rgba(255, 255, 255, 0.05);
+  touch-action: none;
+  z-index: 10;
+  position: relative;
+  transition: background 0.18s ease;
+}
+
+.divider:hover, .divider.dragging {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Output Pane: Default Website Only View */
+.output-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+.output-split-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Website Output Column (Full Width in Website Only View) */
+.preview-col {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.output-split-body.no-website-output .preview-col {
+  display: none !important;
+}
+
+iframe.preview-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+  display: block;
+}
+
+/* Console Column */
+.console-col {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: #060709;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-left: 1px solid var(--line);
+}
+
+/* Hidden by default in website-only mode */
+.output-split-body.website-only .console-col {
+  display: none !important;
+}
+
+.console-bar {
+  height: 32px;
+  background: rgba(12, 13, 17, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.console-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.console-pill {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 10.5px;
+  color: #abb6cb;
+}
+
+.console-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.console-btn {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-family: var(--font-sans);
+  padding: 2px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.console-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+}
+
+#log-output {
+  flex: 1;
+  margin: 0;
+  padding: 12px 14px;
+  overflow: auto;
+  font: 12.5px/1.6 var(--font-mono);
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #cfd7e6;
+  background: transparent;
+}
+
+.log-entry {
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.log-entry .time {
+  color: var(--faint);
+  font-size: 10.5px;
+  flex-shrink: 0;
+}
+
+.log-entry.e { color: var(--err); }
+.log-entry.w { color: var(--warn); }
+.log-entry.s { color: var(--success); }
+.log-entry.i { color: var(--info); }
+
+/* Status Bar */
+footer.status-bar {
+  height: 25px;
+  background: rgba(6, 7, 9, 0.95);
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.status-left, .status-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+}
+
+.status-indicator.busy {
+  background: var(--warn);
+  box-shadow: 0 0 8px var(--warn);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+.hint-badge {
+  font-size: 10.5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  border: 1px solid var(--line);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-left">
+    <!-- Language Selector: HTML/CSS/JS and PHP -->
+    <div class="lang-selector-wrap" id="lang-selector" title="Select Language">
+      <button class="lang-btn active" data-lang="web" title="HTML, CSS & JavaScript Playground">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm6.93 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8 8 0 0 1 18.93 8zM12 4.07a14 14 0 0 1 1.91 3.93H10.1A14 14 0 0 1 12 4.07zM4 12a7.9 7.9 0 0 1 .22-1.85h3.63a19.7 19.7 0 0 0 0 3.7H4.22A7.9 7.9 0 0 1 4 12zm1.07 4h2.95a15.65 15.65 0 0 0 1.38 3.56A8 8 0 0 1 5.07 16zm2.95-8H5.07a8 8 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.02 8zm3.98 11.93A14 14 0 0 1 10.1 16h3.81a14 14 0 0 1-1.91 3.93zM9.85 14a17.65 17.65 0 0 1 0-4h4.3a17.65 17.65 0 0 1 0 4zm4.13 5.56a15.65 15.65 0 0 0 1.38-3.56h2.95a8 8 0 0 1-4.33 3.56zM16.15 14a19.7 19.7 0 0 0 0-3.7h3.63A7.9 7.9 0 0 1 20 12a7.9 7.9 0 0 1-.22 1.85z"/></svg>
+        HTML / CSS / JS
+      </button>
+      <button class="lang-btn" data-lang="php" title="PHP Compiler & Execution Engine">
+        <svg viewBox="0 0 24 24"><path d="M4.5 9h4c1.9 0 3 1.1 3 2.8 0 2-1.3 3.2-3.3 3.2H6.2l-.7 3H3.2l2-9h-.7zm2.4 4.5h1.2c.8 0 1.3-.4 1.3-1.2 0-.7-.4-1.2-1.2-1.2H7.3l-.4 2.4zm5.1-4.5h2.2l-.7 3.3h2.1l.7-3.3h2.2l-2 9H14l.7-3.2h-2.1l-.7 3.2H9.7l2.3-9zm8.5 0h4c1.9 0 3 1.1 3 2.8 0 2-1.3 3.2-3.3 3.2h-2.1l-.7 3h-2.3l2-9h-.6zm2.4 4.5h1.2c.8 0 1.3-.4 1.3-1.2 0-.7-.4-1.2-1.2-1.2h-1.2l-.4 2.4z"/></svg>
+        PHP
+      </button>
+    </div>
+
+    <!-- Web Mode Toggle (Single vs Split) -->
+    <div class="web-mode-pill visible" id="web-mode-pill" title="Toggle Single File or Separate HTML/CSS/JS Tabs">
+      <button class="web-mode-btn active" id="btn-mode-single">Single File</button>
+      <button class="web-mode-btn" id="btn-mode-split">Split Tabs</button>
+    </div>
+  </div>
+
+  <!-- Middle Brand: PURE CLEAN LOGO - NO BORDER, NO CARD, BRIGHT -->
+  <div class="brand-center" id="brand-logo" title="Malevolent Kitchen">
+    <img src="sukuna_clean.png" class="sukuna-logo-pure" alt="Sukuna Clean">
+    <div class="brand-text">
+      <span class="brand-title">MALEVOLENT KITCHEN</span>
+      <span class="brand-sub">CODE STUDIO</span>
+    </div>
+  </div>
+
+  <!-- Right Actions: Auto-Run + Layout + Reset + Run -->
+  <div class="header-right">
+    <!-- Auto-Run Checkbox Toggle -->
+    <label class="autorun-toggle" title="Automatically compile and run code as you type">
+      <input type="checkbox" id="chk-autorun" checked>
+      <span class="autorun-dot"></span>
+      <span>Auto-Run</span>
+    </label>
+
+    <!-- Layout Switcher (matching attached screenshot) -->
+    <div class="layout-switcher" title="Change Layout View">
+      <button class="layout-btn" data-layout="split" title="Split Mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="18" rx="2" />
+          <rect x="14" y="3" width="7" height="8" rx="2" />
+          <rect x="14" y="13" width="7" height="8" rx="2" />
+        </svg>
+      </button>
+      <button class="layout-btn" data-layout="left" title="Output on Left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M12 3v18"/>
+          <path d="M4 4h7v16H4z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="layout-btn" data-layout="bottom" title="Output at Bottom">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M3 13h18"/>
+          <path d="M4 13h16v7H4z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="layout-btn active" data-layout="right" title="Output on Right">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M12 3v18"/>
+          <path d="M13 4h7v16h-7z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Reset Starter Code -->
+    <button class="btn-ghost" id="btn-reset" title="Reset Code to Template">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Reset
+    </button>
+
+    <!-- Run Button -->
+    <button class="btn-run" id="btn-run" title="Execute Code (Ctrl + Enter)">
+      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <span>RUN</span>
+    </button>
+  </div>
+</header>
+
+<!-- Main Workspace -->
+<main id="main-view" class="layout-right">
+  <!-- Code Editor Pane -->
+  <section class="pane editor-pane" aria-label="Code Editor">
+    <div class="pane-header">
+      <div class="pane-tabs" id="editor-tabs">
+        <button class="tab-btn active" id="tab-single" data-target="editor-unified">Unified Code</button>
+        <button class="tab-btn" id="tab-html" data-target="editor-html" style="display:none">HTML</button>
+        <button class="tab-btn" id="tab-css" data-target="editor-css" style="display:none">CSS</button>
+        <button class="tab-btn" id="tab-js" data-target="editor-js" style="display:none">JS</button>
+      </div>
+      <div class="pane-info">
+        <!-- Auto-fill Preset Menu -->
+        <div class="autofill-wrap">
+          <button class="autofill-btn" id="btn-autofill" title="Auto-Fill Templates & Snippets">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Auto-Fill
+          </button>
+          <div class="autofill-menu" id="autofill-menu">
+            <div class="autofill-group-label" id="autofill-group-title">Templates</div>
+            <div id="autofill-items-box"></div>
+            <div class="autofill-divider"></div>
+            <div class="autofill-group-label">Quick Snippets (Type + Tab)</div>
+            <div class="autofill-snippets-hint">
+              <div><span>HTML5 Page</span><code>! + Tab</code></div>
+              <div><span>PHP Block</span><code>php + Tab</code></div>
+              <div><span>Console Log</span><code>clg + Tab</code></div>
+              <div><span>Function</span><code>fn + Tab</code></div>
+              <div><span>Div Element</span><code>div + Tab</code></div>
+            </div>
+          </div>
+        </div>
+
+        <span id="cursor-pos">Ln 1, Col 1</span>
+        <span class="hint-badge" id="lang-badge">HTML (All-in-one)</span>
+      </div>
+    </div>
+
+    <div class="editor-wrapper">
+      <!-- Line Numbers Gutter -->
+      <div class="line-numbers" id="line-numbers">1</div>
+
+      <!-- Textareas for code -->
+      <div class="code-editors-box">
+        <textarea id="editor-unified" class="code-area active" spellcheck="false" placeholder="Write code here... Tip: type '<h' to auto-complete tags, or '!' + Tab for HTML5 boilerplate"></textarea>
+        <textarea id="editor-html" class="code-area" spellcheck="false" placeholder="<!-- HTML content here -->"></textarea>
+        <textarea id="editor-css" class="code-area" spellcheck="false" placeholder="/* CSS styling here */"></textarea>
+        <textarea id="editor-js" class="code-area" spellcheck="false" placeholder="// JavaScript logic here"></textarea>
+
+        <!-- Autocomplete IntelliSense Suggestion Popup -->
+        <div class="autocomplete-popup" id="autocomplete-popup">
+          <div class="autocomplete-list" id="autocomplete-list"></div>
+          <div class="autocomplete-footer">
+            <span><kbd>↑↓</kbd> choose</span>
+            <span><kbd>Tab</kbd> / <kbd>Enter</kbd> insert</span>
+            <span><kbd>Esc</kbd></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Divider for Resizing -->
+  <div class="divider divider-main" id="divider-main" role="separator" aria-label="Resize panels"></div>
+
+  <!-- Output Pane: Default WEBSITE ONLY View -->
+  <section class="pane output-pane" aria-label="Execution Output">
+    <div class="pane-header">
+      <div class="pane-tabs" id="output-tabs">
+        <!-- Default: Website Only View -->
+        <button class="tab-btn active" id="tab-view-preview">Website Only</button>
+        <button class="tab-btn" id="tab-view-both">Preview &amp; Console</button>
+        <button class="tab-btn" id="tab-view-console">Console Only</button>
+      </div>
+      <div class="pane-info">
+        <span id="runtime-status">Ready</span>
+      </div>
+    </div>
+
+    <!-- Output Split Body (Website Only by default) -->
+    <div class="output-split-body website-only" id="output-split-body">
+      <!-- Website Output Column (Takes full width by default) -->
+      <div class="preview-col" id="preview-col">
+        <iframe id="preview-frame" class="preview-frame" sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
+      </div>
+
+      <!-- Console Column (Hidden by default in website-only mode) -->
+      <div class="console-col" id="console-col">
+        <div class="console-bar">
+          <div class="console-bar-left">
+            <span>Console Output</span>
+            <span class="console-pill" id="log-count">0 items</span>
+          </div>
+          <div class="console-actions">
+            <button class="console-btn" id="btn-clear-console" title="Clear Console">Clear</button>
+          </div>
+        </div>
+        <pre id="log-output"></pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Status Bar Footer -->
+<footer class="status-bar">
+  <div class="status-left">
+    <span><span class="status-indicator" id="status-dot"></span> <span id="status-text">Malevolent Kitchen Online</span></span>
+    <span>Mode: <strong id="status-mode" style="color:#ffffff;">HTML / CSS / JS</strong></span>
+  </div>
+  <div class="status-right">
+    <span>Press <strong style="color:#ffffff;">Ctrl + Enter</strong> to Run</span>
+</footer>
+
+
+
+<script>
+(function() {
+  // --- STARTER TEMPLATES & AUTO-FILL LIBRARY ---
+  var STARTERS = {
+        web_single: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Start your HTML here</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #000000;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      text-align: center;
+    }
+    .hero {
+      max-width: 600px;
+      padding: 40px 24px;
+    }
+    h1 {
+      font-size: 2.4rem;
+      margin: 0 0 12px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    p {
+      color: #9ca3af;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>Start your HTML here</h1>
+    <p>Type your code in the editor to see live updates instantly.</p>
+  </div>
+</body>
+</html>`,
+
+        web_split_html: `<div class="hero">
+  <h1>Start your HTML here</h1>
+  <p>Type your code in the editor to see live updates instantly.</p>
+</div>`,
+
+    web_split_css: `body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  text-align: center;
+}
+.hero {
+  max-width: 600px;
+  padding: 40px 24px;
+}
+h1 {
+  font-size: 2.4rem;
+  margin: 0 0 12px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+p {
+  color: #9ca3af;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  margin: 0;
+}`,
+
+    web_split_js: `// Start your JavaScript here
+console.log("Ready to code!");`,
+
+    js: `// Standalone JavaScript Scripting
+console.log("=== JavaScript Engine ===");
+
+const benchmarks = [
+  { module: "DOM Sandbox", status: "PASS", duration: "0.2ms" },
+  { module: "Console Streamer", status: "PASS", duration: "0.1ms" },
+  { module: "Execution Pipeline", status: "PASS", duration: "0.3ms" }
+];
+
+console.table(benchmarks);
+
+// Async calculation
+async function computeSum() {
+  console.info("Processing asynchronous operations...");
+  await new Promise(r => setTimeout(r, 200));
+  const numbers = [10, 20, 30, 40, 50];
+  const sum = numbers.reduce((a, b) => a + b, 0);
+  console.log("Array calculation complete. Sum =", sum);
+  return { numbers, sum, average: sum / numbers.length };
+}
+
+computeSum().then(res => console.log("=> Output:", res));`,
+
+    php: `<?php
+// PHP Script Execution
+echo "=== MALEVOLENT KITCHEN PHP ===\\n";
+echo "PHP Version: " . phpversion() . "\\n\\n";
+
+$appName = "Malevolent Kitchen";
+$version = "2.5.0";
+
+echo "Application: " . $appName . "\\n";
+echo "Engine Version: " . $version . "\\n\\n";
+
+$skills = ["Cleave", "Dismantle", "Domain Expansion"];
+echo "Techniques:\\n";
+foreach ($skills as $index => $skill) {
+    echo "  [" . ($index + 1) . "] " . $skill . "\\n";
+}
+
+function calculatePower($base, $multiplier) {
+    return $base * $multiplier;
+}
+
+$totalPower = calculatePower(2500, 4);
+echo "\\nCalculated Output: " . $totalPower . " Joules\\n";
+
+// HTML output example (renders directly in preview!)
+echo "<div style='background:#111;color:#fff;padding:20px;border-radius:12px;margin-top:20px;border:1px solid #333;'>";
+echo "  <h2 style='margin:0 0 8px;color:#fff;'>PHP Rendered Output</h2>";
+echo "  <p style='color:#999;margin:0;'>This section is rendered from your PHP script!</p>";
+echo "</div>";
+?>`
+  };
+
+  // Auto-Fill Library Presets
+  var AUTOFILL_PRESETS = {
+    web: [
+      {
+        title: "Glassmorphism Card Grid",
+        code: `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { background: #000; color: #fff; font-family: system-ui; padding: 40px 20px; margin: 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; max-width: 900px; margin: 0 auto; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 24px; backdrop-filter: blur(10px); }
+    h3 { margin-top: 0; color: #fff; }
+    p { color: #94a3b8; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="card"><h3>Analytics</h3><p>Real-time telemetry and throughput metrics.</p></div>
+    <div class="card"><h3>Storage</h3><p>Distributed virtual filesystem and cache.</p></div>
+    <div class="card"><h3>Security</h3><p>Sandboxed runtime with memory isolation.</p></div>
+  </div>
+</body>
+</html>`
+      },
+      {
+        title: "Interactive Form & Validator",
+        code: `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { background: #000; color: #fff; font-family: system-ui; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    form { background: #111; padding: 32px; border-radius: 12px; border: 1px solid #333; width: 320px; }
+    input { width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px; }
+    button { width: 100%; padding: 10px; background: #fff; color: #000; font-weight: 700; border: 0; border-radius: 6px; cursor: pointer; }
+    #msg { margin-top: 12px; font-size: 13px; text-align: center; color: #34d399; }
+  </style>
+</head>
+<body>
+  <form id="f">
+    <h3 style="margin-top:0">Sign Up</h3>
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <button type="submit">Submit</button>
+    <div id="msg"></div>
+  </form>
+  <script>
+    document.getElementById('f').onsubmit = (e) => {
+      e.preventDefault();
+      document.getElementById('msg').textContent = "Submitted successfully!";
+      console.log("Form data:", { name: document.getElementById('name').value, email: document.getElementById('email').value });
+    };
+  <\/script>
+</body>
+</html>`
+      },
+      {
+        title: "Canvas Particle Network",
+        code: `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <script>
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const pts = Array.from({length: 40}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: (Math.random() - 0.5) * 1.5
+    }));
+    function draw() {
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.5, 0, Math.PI*2);
+        ctx.fill();
+      });
+      for(let i=0; i<pts.length; i++) {
+        for(let j=i+1; j<pts.length; j++) {
+          const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+          if(d < 110) {
+            ctx.strokeStyle = 'rgba(255,255,255,' + (1 - d/110) * 0.4 + ')';
+            ctx.beginPath();
+            ctx.moveTo(pts[i].x, pts[i].y);
+            ctx.lineTo(pts[j].x, pts[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  <\/script>
+</body>
+</html>`
+      },
+      {
+        title: "HTML5 Clean Starter",
+        code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Project</title>
+  <style>
+    body { margin: 0; padding: 28px; background: #000; color: #fff; font-family: system-ui; }
+  </style>
+</head>
+<body>
+  <h1>Malevolent Kitchen</h1>
+  <p>Start coding right away.</p>
+</body>
+</html>`
+      }
+    ],
+    js: [
+      {
+        title: "Async Data Fetch & Pipeline",
+        code: `async function fetchData() {
+  console.log("Fetching simulated stream...");
+  await new Promise(r => setTimeout(r, 200));
+  const data = [
+    { id: 101, name: "Node Gateway", status: "Active", latency: "14ms" },
+    { id: 102, name: "Compiler Engine", status: "Active", latency: "6ms" },
+    { id: 103, name: "Cache Store", status: "Active", latency: "2ms" }
+  ];
+  console.table(data);
+  return data;
+}
+
+fetchData().then(res => console.log("Done! Processed", res.length, "services."));`
+      },
+      {
+        title: "Array Pipeline (Map/Filter/Reduce)",
+        code: `const scores = [88, 92, 45, 67, 100, 74, 95];
+const passed = scores.filter(s => s >= 70);
+const curved = passed.map(s => Math.min(100, s + 5));
+const avg = (curved.reduce((a, b) => a + b, 0) / curved.length).toFixed(1);
+
+console.log("Original scores:", scores);
+console.log("Passed scores:", passed);
+console.log("Curved scores (+5):", curved);
+console.log("Average score:", avg);`
+      },
+      {
+        title: "Stopwatch State Engine",
+        code: `class Stopwatch {
+  constructor() {
+    this.elapsed = 0;
+    this.timer = null;
+  }
+  start() {
+    console.log("Stopwatch started");
+    this.timer = setInterval(() => {
+      this.elapsed += 200;
+      console.log("Elapsed:", (this.elapsed / 1000).toFixed(1) + "s");
+      if (this.elapsed >= 1000) {
+        this.stop();
+      }
+    }, 200);
+  }
+  stop() {
+    clearInterval(this.timer);
+    console.log("Stopwatch completed at", (this.elapsed / 1000).toFixed(1) + "s");
+  }
+}
+
+new Stopwatch().start();`
+      }
+    ],
+    php: [
+      {
+        title: "Dynamic Table Generator",
+        code: `<?php
+$data = [
+    ["id" => 1, "name" => "Core Router", "load" => "12%"],
+    ["id" => 2, "name" => "Database Node", "load" => "35%"],
+    ["id" => 3, "name" => "Cache Cluster", "load" => "8%"]
+];
+
+echo "<table style='width:100%;border-collapse:collapse;color:#fff;font-family:sans-serif;'>";
+echo "<tr style='background:#222;text-align:left;'><th style='padding:8px;'>ID</th><th style='padding:8px;'>Module</th><th style='padding:8px;'>Load</th></tr>";
+foreach ($data as $row) {
+    echo "<tr style='border-bottom:1px solid #333;'><td style='padding:8px;'>" . $row['id'] . "</td><td style='padding:8px;'>" . $row['name'] . "</td><td style='padding:8px;'>" . $row['load'] . "</td></tr>";
+}
+echo "</table>";
+?>`
+      },
+      {
+        title: "Functions & Calculations",
+        code: `<?php
+function calculateDiscount($price, $discountPercent) {
+    return $price - ($price * ($discountPercent / 100));
+}
+
+$items = [
+    "Laptop" => 1200,
+    "Keyboard" => 150,
+    "Monitor" => 400
+];
+
+echo "=== Price Calculator ===\\n";
+foreach ($items as $name => $price) {
+    $salePrice = calculateDiscount($price, 15);
+    echo $name . ": Original $" . $price . " => Sale $" . $salePrice . "\\n";
+}
+?>`
+      },
+      {
+        title: "API JSON Response",
+        code: `<?php
+$response = [
+    "status" => "success",
+    "timestamp" => time(),
+    "version" => phpversion(),
+    "items" => ["Alpha", "Beta", "Gamma"]
+];
+
+echo json_encode($response);
+?>`
+      },
+      {
+        title: "String & Word Counter",
+        code: `<?php
+$text = "The quick brown fox jumps over the lazy dog";
+$words = explode(" ", $text);
+
+echo "Text: " . $text . "\\n";
+echo "Character Count: " . strlen($text) . "\\n";
+echo "Word Count: " . count($words) . "\\n";
+echo "Uppercase: " . strtoupper($text) . "\\n";
+?>`
+      }
+    ]
+  };
+
+  var STORAGE_KEY = "malevolent_kitchen_clean_v7";
+  var currentLang = "web";
+  var webMode = "single";
+  var currentLayout = "right";
+  var currentTab = "editor-unified";
+  // DEFAULT: Website Only View
+  var outputDisplayMode = "preview";
+  // Auto-Run State (Enabled by default as requested!)
+  var autoRunEnabled = true;
+  var autoRunTimer = null;
+
+  // Elements
+  var mainView = document.getElementById("main-view");
+  var dividerMain = document.getElementById("divider-main");
+  var editorUnified = document.getElementById("editor-unified");
+  var editorHtml = document.getElementById("editor-html");
+  var editorCss = document.getElementById("editor-css");
+  var editorJs = document.getElementById("editor-js");
+  var lineNumbers = document.getElementById("line-numbers");
+  var cursorPos = document.getElementById("cursor-pos");
+  var langBadge = document.getElementById("lang-badge");
+  var runtimeStatus = document.getElementById("runtime-status");
+  var statusText = document.getElementById("status-text");
+  var statusDot = document.getElementById("status-dot");
+  var statusMode = document.getElementById("status-mode");
+  var chkAutoRun = document.getElementById("chk-autorun");
+
+  var previewCol = document.getElementById("preview-col");
+  var consoleCol = document.getElementById("console-col");
+  var outputSplitBody = document.getElementById("output-split-body");
+  var previewFrame = document.getElementById("preview-frame");
+  var logOutput = document.getElementById("log-output");
+  var logCount = document.getElementById("log-count");
+
+  var webModePill = document.getElementById("web-mode-pill");
+  var btnModeSingle = document.getElementById("btn-mode-single");
+  var btnModeSplit = document.getElementById("btn-mode-split");
+
+  var tabSingle = document.getElementById("tab-single");
+  var tabHtml = document.getElementById("tab-html");
+  var tabCss = document.getElementById("tab-css");
+  var tabJs = document.getElementById("tab-js");
+
+  var tabViewBoth = document.getElementById("tab-view-both");
+  var tabViewPreview = document.getElementById("tab-view-preview");
+  var tabViewConsole = document.getElementById("tab-view-console");
+
+  var btnAutofill = document.getElementById("btn-autofill");
+  var autofillMenu = document.getElementById("autofill-menu");
+  var autofillItemsBox = document.getElementById("autofill-items-box");
+  var autofillGroupTitle = document.getElementById("autofill-group-title");
+
+  function getActiveEditor() {
+    if (currentLang === "web" && webMode === "split") {
+      if (currentTab === "editor-html") return editorHtml;
+      if (currentTab === "editor-css") return editorCss;
+      if (currentTab === "editor-js") return editorJs;
+    }
+    return editorUnified;
+  }
+
+  // --- STATE PERSISTENCE ---
+  function syncCurrentCodeToMemory() {
+    if (currentLang === "web") {
+      if (webMode === "single") {
+        editorUnified.dataset.webCode = editorUnified.value;
+      }
+    } else if (currentLang === "js") {
+      editorUnified.dataset.jsCode = editorUnified.value;
+    } else if (currentLang === "php") {
+      editorUnified.dataset.phpCode = editorUnified.value;
+    }
+  }
+
+  function saveState() {
+    syncCurrentCodeToMemory();
+    var data = {
+      lang: currentLang,
+      webMode: webMode,
+      layout: currentLayout,
+      outputDisplayMode: outputDisplayMode,
+      autoRunEnabled: autoRunEnabled,
+      code_web_single: editorUnified.dataset.webCode || editorUnified.value,
+      code_html: editorHtml.value,
+      code_css: editorCss.value,
+      code_js: editorJs.value,
+      code_standalone_js: editorUnified.dataset.jsCode || STARTERS.js,
+      code_php: editorUnified.dataset.phpCode || STARTERS.php
+    };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {}
+  }
+
+  function loadState() {
+    var saved = null;
+    try {
+      saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    } catch(e) {}
+
+    if (saved) {
+      currentLang = saved.lang || "web";
+      webMode = saved.webMode || "single";
+      currentLayout = saved.layout || "right";
+      outputDisplayMode = saved.outputDisplayMode || "preview";
+      autoRunEnabled = saved.autoRunEnabled !== undefined ? saved.autoRunEnabled : true;
+      
+      var webCode = saved.code_web_single || STARTERS.web_single;
+      if (webCode.indexOf("Trigger Action") !== -1 || webCode.indexOf("action-btn") !== -1 || webCode.indexOf("MALEVOLENT KITCHEN") !== -1) {
+        webCode = STARTERS.web_single;
+      }
+      editorUnified.dataset.webCode = webCode;
+
+      var splitHtml = saved.code_html || STARTERS.web_split_html;
+      if (splitHtml.indexOf("Trigger Action") !== -1 || splitHtml.indexOf("action-btn") !== -1 || splitHtml.indexOf("MALEVOLENT KITCHEN") !== -1) {
+        splitHtml = STARTERS.web_split_html;
+        saved.code_css = STARTERS.web_split_css;
+        saved.code_js = STARTERS.web_split_js;
+      }
+      editorHtml.value = splitHtml;
+
+      var splitCss = saved.code_css || STARTERS.web_split_css;
+      if (splitCss.indexOf("Trigger") !== -1 || splitCss.indexOf(".card") !== -1) {
+        splitCss = STARTERS.web_split_css;
+      }
+      editorCss.value = splitCss;
+      editorJs.value = saved.code_js || STARTERS.web_split_js;
+
+      editorUnified.dataset.jsCode = saved.code_standalone_js || STARTERS.js;
+      editorUnified.dataset.phpCode = saved.code_php || STARTERS.php;
+    } else {
+      editorUnified.dataset.webCode = STARTERS.web_single;
+      editorHtml.value = STARTERS.web_split_html;
+      editorCss.value = STARTERS.web_split_css;
+      editorJs.value = STARTERS.web_split_js;
+
+      editorUnified.dataset.jsCode = STARTERS.js;
+      editorUnified.dataset.phpCode = STARTERS.php;
+      outputDisplayMode = "preview";
+      autoRunEnabled = true;
+    }
+
+    chkAutoRun.checked = autoRunEnabled;
+    updateAutoRunUI();
+    applyLayout(currentLayout);
+    switchLang(currentLang, false);
+    setOutputView(outputDisplayMode);
+    renderAutofillMenu();
+  }
+
+  function updateAutoRunUI() {
+    var toggle = document.querySelector(".autorun-toggle");
+    if (toggle) {
+      toggle.classList.toggle("off", !autoRunEnabled);
+      toggle.title = autoRunEnabled ? "Auto-Run: Active (automatically runs on typing)" : "Auto-Run: Off (click RUN or press Ctrl+Enter to execute)";
+    }
+  }
+
+  // --- AUTO-RUN SCHEDULER ---
+  function scheduleAutoRun() {
+    if (autoRunEnabled) {
+      clearTimeout(autoRunTimer);
+      autoRunTimer = setTimeout(function() {
+        executeCode();
+      }, 650);
+    }
+  }
+
+  // --- LOGGING ---
+  var logEntries = 0;
+  function clearConsole() {
+    logOutput.textContent = "";
+    logEntries = 0;
+    logCount.textContent = "0 items";
+  }
+
+  function appendLog(type, text) {
+    logEntries++;
+    logCount.textContent = logEntries + (logEntries === 1 ? " item" : " items");
+
+    var row = document.createElement("div");
+    row.className = "log-entry " + (type || "i");
+
+    var time = document.createElement("span");
+    time.className = "time";
+    var now = new Date();
+    time.textContent = String(now.getHours()).padStart(2, '0') + ":" + 
+                       String(now.getMinutes()).padStart(2, '0') + ":" + 
+                       String(now.getSeconds()).padStart(2, '0');
+
+    var content = document.createElement("span");
+    content.textContent = text;
+
+    row.appendChild(time);
+    row.appendChild(content);
+    logOutput.appendChild(row);
+    logOutput.scrollTop = logOutput.scrollHeight;
+  }
+
+  function updateLineNumbers() {
+    var target = getActiveEditor();
+    var lines = (target.value.match(/\n/g) || []).length + 1;
+    var numbers = [];
+    for (var i = 1; i <= lines; i++) {
+      numbers.push(i);
+    }
+    lineNumbers.textContent = numbers.join("\n");
+  }
+
+  function updateCursorInfo() {
+    var target = getActiveEditor();
+    var selStart = target.selectionStart;
+    var textBefore = target.value.substring(0, selStart);
+    var line = (textBefore.match(/\n/g) || []).length + 1;
+    var lastNewline = textBefore.lastIndexOf("\n");
+    var col = (lastNewline === -1) ? (selStart + 1) : (selStart - lastNewline);
+    cursorPos.textContent = "Ln " + line + ", Col " + col;
+  }
+
+  // --- AUTO-FILL MENU ---
+  function renderAutofillMenu() {
+    var key = currentLang === "web" ? "web" : currentLang;
+    var presets = AUTOFILL_PRESETS[key] || [];
+    autofillGroupTitle.textContent = currentLang.toUpperCase() + " Templates";
+    autofillItemsBox.innerHTML = "";
+
+    presets.forEach(function(preset) {
+      var itemBtn = document.createElement("button");
+      itemBtn.className = "autofill-item";
+      itemBtn.textContent = preset.title;
+      itemBtn.addEventListener("click", function() {
+        var target = getActiveEditor();
+        target.value = preset.code;
+        syncCurrentCodeToMemory();
+        updateLineNumbers();
+        updateCursorInfo();
+        autofillMenu.classList.remove("open");
+        executeCode();
+      });
+      autofillItemsBox.appendChild(itemBtn);
+    });
+  }
+
+  btnAutofill.addEventListener("click", function(e) {
+    e.stopPropagation();
+    renderAutofillMenu();
+    autofillMenu.classList.toggle("open");
+  });
+
+  window.addEventListener("click", function() {
+    autofillMenu.classList.remove("open");
+  });
+
+  // --- BRIDGE SCRIPT FOR IFRAME LOGGING & STORAGE COMPATIBILITY ---
+  var BRIDGE_SCRIPT = '<script>(function(){' +
+    'try{var _t="__mk_test__";window.localStorage.setItem(_t,_t);window.localStorage.removeItem(_t);}catch(e){' +
+    'function _createStorage(){var _s={};return{getItem:function(k){return _s.hasOwnProperty(k)?_s[k]:null;},setItem:function(k,v){_s[k]=String(v);},removeItem:function(k){delete _s[k];},clear:function(){_s={};},key:function(i){return Object.keys(_s)[i]||null;},get length(){return Object.keys(_s).length;}};}'+
+    'try{var _poly=_createStorage();Object.defineProperty(window,"localStorage",{value:_poly,writable:true,configurable:true});Object.defineProperty(window,"sessionStorage",{value:_createStorage(),writable:true,configurable:true});}catch(e2){}' +
+    '}' +
+    'function format(a){return Array.prototype.map.call(a,function(x){try{return typeof x==="object"?JSON.stringify(x,null,2):String(x)}catch(e){return String(x)}}).join(" ");}' +
+    'function send(t,m){parent.postMessage({malevolent:1,type:t,msg:m},"*");}' +
+    '["log","info","warn","error","table","dir"].forEach(function(k){var orig=console[k];console[k]=function(){send(k==="table"?"i":k==="dir"?"i":k,format(arguments));if(orig)orig.apply(console,arguments);};});' +
+    'window.addEventListener("error",function(e){send("e",e.message+(e.lineno?" (line "+e.lineno+")":""));});' +
+    'window.addEventListener("unhandledrejection",function(e){send("e","Unhandled rejection: "+(e.reason&&e.reason.message||e.reason));});' +
+  '})();<\/script>';
+
+  window.addEventListener("message", function(e) {
+    var d = e.data;
+    if (!d || d.malevolent !== 1) return;
+    appendLog(d.type === "error" || d.type === "e" ? "e" : d.type === "warn" || d.type === "w" ? "w" : "i", d.msg);
+  });
+
+  // --- OUTPUT VIEW TOGGLING ---
+  function setOutputView(mode) {
+    outputDisplayMode = mode;
+    tabViewPreview.classList.toggle("active", mode === "preview");
+    tabViewBoth.classList.toggle("active", mode === "both");
+    tabViewConsole.classList.toggle("active", mode === "console");
+
+    outputSplitBody.classList.remove("no-website-output", "website-only");
+
+    if (currentLang === "js") {
+      outputSplitBody.classList.add("no-website-output");
+    } else {
+      if (mode === "preview") {
+        outputSplitBody.classList.add("website-only");
+      } else if (mode === "console") {
+        outputSplitBody.classList.add("no-website-output");
+      }
+    }
+    saveState();
+  }
+
+  var SUKUNA_DATA_URI = "data:image/webp;base64,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";
+
+  // --- 1. HTML, CSS & JS COMPILER & EXECUTOR ---
+  function compileAndRunWeb() {
+    clearConsole();
+    var startTime = performance.now();
+    appendLog("i", "Compiling HTML, CSS and JavaScript...");
+
+    var htmlContent = "";
+    if (webMode === "single") {
+      htmlContent = editorUnified.value;
+    } else {
+      var js = editorJs.value.replace(/<\/script/gi, "<\\/script");
+      var css = editorCss.value.replace(/<\/style/gi, "<\\/style");
+      htmlContent = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+                    '<style>' + css + '</style></head><body>' + editorHtml.value + '<script>' + js + '<\/script></body></html>';
+    }
+
+    var fullHtml = htmlContent;
+    var baseTag = '<base href="' + document.baseURI + '">';
+    if (fullHtml.indexOf("<head>") !== -1) {
+      fullHtml = fullHtml.replace("<head>", "<head>" + baseTag + BRIDGE_SCRIPT);
+    } else {
+      fullHtml = baseTag + BRIDGE_SCRIPT + fullHtml;
+    }
+
+    if (typeof SUKUNA_DATA_URI !== "undefined") {
+      fullHtml = fullHtml.replace(/sukuna_clean\.png/g, SUKUNA_DATA_URI).replace(/sukuna\.png/g, SUKUNA_DATA_URI);
+    }
+    previewFrame.srcdoc = fullHtml;
+    var duration = (performance.now() - startTime).toFixed(1);
+    appendLog("s", "Application compiled and executed successfully (" + duration + "ms).");
+  }
+
+  // --- 2. STANDALONE JAVASCRIPT EXECUTOR ---
+  async function compileAndRunJS() {
+    clearConsole();
+    var startTime = performance.now();
+    appendLog("i", "Executing JavaScript code...");
+
+    function formatArg(x) {
+      try { return typeof x === "object" ? JSON.stringify(x, null, 2) : String(x); }
+      catch(e) { return String(x); }
+    }
+
+    var sandboxConsole = {
+      log: function() { appendLog("i", Array.from(arguments).map(formatArg).join(" ")); },
+      info: function() { appendLog("i", Array.from(arguments).map(formatArg).join(" ")); },
+      warn: function() { appendLog("w", Array.from(arguments).map(formatArg).join(" ")); },
+      error: function() { appendLog("e", Array.from(arguments).map(formatArg).join(" ")); },
+      table: function(data) { appendLog("i", "[Table]\n" + JSON.stringify(data, null, 2)); }
+    };
+
+    try {
+      var AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+      var runner = new AsyncFunction("console", editorUnified.value);
+      var result = await runner(sandboxConsole);
+      var duration = (performance.now() - startTime).toFixed(1);
+      if (result !== undefined) {
+        appendLog("s", "=> Return value: " + formatArg(result));
+      }
+      appendLog("s", "JavaScript executed in " + duration + "ms.");
+    } catch(err) {
+      appendLog("e", "JavaScript Error: " + err.message);
+    }
+  }
+
+  // --- 3. ROBUST IN-BROWSER PHP COMPILER & EXECUTOR ---
+  function compileAndRunPHP() {
+    clearConsole();
+    var startTime = performance.now();
+    appendLog("i", "Compiling & executing PHP code...");
+
+    var rawCode = editorUnified.value;
+    var phpOutput = "";
+
+    function php_echo() {
+      for (var a = 0; a < arguments.length; a++) {
+        phpOutput += String(arguments[a]);
+      }
+    }
+
+    function php_print_r(arg) {
+      phpOutput += (typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)) + "\n";
+    }
+
+    function php_var_dump(arg) {
+      phpOutput += (typeof arg) + "(" + (typeof arg === 'object' ? JSON.stringify(arg) : String(arg)) + ")\n";
+    }
+
+    try {
+      var clean = rawCode.trim();
+      var isPhp = clean.startsWith("<?php");
+      var compiledBody = "";
+
+      if (clean.indexOf("<?php") !== -1) {
+        var parts = clean.split(/(<\?php|\?>)/);
+        var inPhpBlock = false;
+
+        for (var p = 0; p < parts.length; p++) {
+          var part = parts[p];
+          if (part === "<?php") {
+            inPhpBlock = true;
+            continue;
+          }
+          if (part === "?>") {
+            inPhpBlock = false;
+            continue;
+          }
+          if (!part.trim()) continue;
+
+          if (inPhpBlock) {
+            compiledBody += transpilePhpSnippet(part) + "\n";
+          } else {
+            compiledBody += "php_echo(" + JSON.stringify(part) + ");\n";
+          }
+        }
+      } else {
+        compiledBody = transpilePhpSnippet(clean);
+      }
+
+      function transpilePhpSnippet(code) {
+        var js = code;
+        js = js.replace(/^<\?php\s*/i, '').replace(/\?>\s*$/i, '');
+        js = js.replace(/\barray\s*\(/g, '[');
+        js = js.replace(/=>/g, ':');
+        js = js.replace(/([\'\"A-Za-z0-9_\$\)\]])\s*\.\s*([\'\"A-Za-z0-9_\$\(\[])/g, '$1 + $2');
+        js = js.replace(/\becho\s+([^;]+);/g, 'php_echo($1);');
+        js = js.replace(/\bprint\s+([^;]+);/g, 'php_echo($1);');
+        js = js.replace(/\bprint_r\s*\(([^;]+)\);/g, 'php_print_r($1);');
+        js = js.replace(/\bvar_dump\s*\(([^;]+)\);/g, 'php_var_dump($1);');
+        js = js.replace(/foreach\s*\(\s*\$([a-zA-Z0-9_]+)\s+as\s+\$([a-zA-Z0-9_]+)\s*=>\s*\$([a-zA-Z0-9_]+)\s*\)/g, 
+          'for (const [v_$2, v_$3] of Object.entries(v_$1))');
+        js = js.replace(/foreach\s*\(\s*\$([a-zA-Z0-9_]+)\s+as\s+\$([a-zA-Z0-9_]+)\s*\)/g, 
+          'for (const v_$2 of (Array.isArray(v_$1) ? v_$1 : Object.values(v_$1)))');
+        js = js.replace(/\$([a-zA-Z0-9_]+)/g, 'v_$1');
+        return js;
+      }
+
+      var phpversion = function() { return "8.4.3"; };
+      var count = function(a) { return Array.isArray(a) ? a.length : (typeof a === 'object' && a !== null ? Object.keys(a).length : 0); };
+      var strlen = function(s) { return String(s).length; };
+      var strtoupper = function(s) { return String(s).toUpperCase(); };
+      var strtolower = function(s) { return String(s).toLowerCase(); };
+      var explode = function(delimiter, str) { return String(str).split(delimiter); };
+      var implode = function(glue, arr) { return Array.isArray(arr) ? arr.join(glue) : ""; };
+      var trim = function(s) { return String(s).trim(); };
+      var round = function(n, p) { return p ? Number(Math.round(n + 'e' + p) + 'e-' + p) : Math.round(n); };
+      var floor = function(n) { return Math.floor(n); };
+      var ceil = function(n) { return Math.ceil(n); };
+      var date = function(f) { return new Date().toISOString().replace('T', ' ').slice(0, 19); };
+      var time = function() { return Math.floor(Date.now() / 1000); };
+      var json_encode = function(o) { return JSON.stringify(o); };
+      var json_decode = function(s) { return JSON.parse(s); };
+      var is_array = function(a) { return Array.isArray(a); };
+      var is_string = function(s) { return typeof s === 'string'; };
+      var is_numeric = function(n) { return !isNaN(parseFloat(n)) && isFinite(n); };
+      var array_keys = function(o) { return typeof o === 'object' && o !== null ? Object.keys(o) : []; };
+      var array_values = function(o) { return typeof o === 'object' && o !== null ? Object.values(o) : []; };
+
+      var runner = new Function(
+        'php_echo', 'php_print_r', 'php_var_dump',
+        'phpversion', 'count', 'strlen', 'strtoupper', 'strtolower', 'explode', 'implode', 'trim', 'round', 'floor', 'ceil', 'date', 'time',
+        'json_encode', 'json_decode', 'is_array', 'is_string', 'is_numeric', 'array_keys', 'array_values',
+        compiledBody
+      );
+
+      runner(
+        php_echo, php_print_r, php_var_dump,
+        phpversion, count, strlen, strtoupper, strtolower, explode, implode, trim, round, floor, ceil, date, time,
+        json_encode, json_decode, is_array, is_string, is_numeric, array_keys, array_values
+      );
+
+      var lines = phpOutput.split("\n");
+      for (var l = 0; l < lines.length; l++) {
+        if (lines[l]) appendLog("i", lines[l]);
+      }
+
+      var previewDoc = '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+        '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+        '<style>body{margin:0;padding:24px;background:#000;color:#fff;font-family:system-ui,sans-serif;}pre{background:#111;padding:12px;border-radius:6px;}</style>' +
+        '</head><body>' + (phpOutput || "<p style='color:#777;'>PHP script executed (no output returned).</p>") + '</body></html>';
+      previewFrame.srcdoc = previewDoc;
+
+      var duration = (performance.now() - startTime).toFixed(1);
+      appendLog("s", "PHP execution finished in " + duration + "ms.");
+    } catch(err) {
+      appendLog("e", "PHP Syntax/Execution Error: " + err.message);
+    }
+  }
+
+  // --- MASTER EXECUTION TRIGGER ---
+  function executeCode() {
+    saveState();
+    statusDot.classList.add("busy");
+    statusText.textContent = "Compiling & Running...";
+
+    setTimeout(function() {
+      try {
+        if (currentLang === "web") {
+          compileAndRunWeb();
+        } else if (currentLang === "js") {
+          compileAndRunJS();
+        } else if (currentLang === "php") {
+          compileAndRunPHP();
+        }
+      } catch(e) {
+        appendLog("e", "Compiler Exception: " + e.message);
+      } finally {
+        statusDot.classList.remove("busy");
+        statusText.textContent = "Malevolent Kitchen Online";
+      }
+    }, 10);
+  }
+
+  // --- LANGUAGE SWITCHER ---
+  function switchLang(lang, shouldExecute) {
+    syncCurrentCodeToMemory();
+    currentLang = lang;
+
+    document.querySelectorAll(".lang-btn").forEach(function(b) {
+      b.classList.toggle("active", b.dataset.lang === lang);
+    });
+
+    if (lang === "web") {
+      webModePill.classList.add("visible");
+      statusMode.textContent = webMode === "single" ? "HTML / CSS / JS (Single File)" : "HTML / CSS / JS (Split Tabs)";
+      langBadge.textContent = webMode === "single" ? "HTML (All-in-one)" : "Split Web Tabs";
+
+      if (webMode === "single") {
+        tabSingle.style.display = "flex";
+        tabHtml.style.display = "none";
+        tabCss.style.display = "none";
+        tabJs.style.display = "none";
+        tabSingle.textContent = "index.html";
+        editorUnified.classList.add("active");
+        editorHtml.classList.remove("active");
+        editorCss.classList.remove("active");
+        editorJs.classList.remove("active");
+        editorUnified.value = editorUnified.dataset.webCode || STARTERS.web_single;
+      } else {
+        tabSingle.style.display = "none";
+        tabHtml.style.display = "flex";
+        tabCss.style.display = "flex";
+        tabJs.style.display = "flex";
+        switchEditorTab("editor-html");
+      }
+    } else {
+      webModePill.classList.remove("visible");
+      tabSingle.style.display = "flex";
+      tabHtml.style.display = "none";
+      tabCss.style.display = "none";
+      tabJs.style.display = "none";
+
+      editorUnified.classList.add("active");
+      editorHtml.classList.remove("active");
+      editorCss.classList.remove("active");
+      editorJs.classList.remove("active");
+
+      if (lang === "js") {
+        tabSingle.textContent = "script.js";
+        langBadge.textContent = "JavaScript (ES6+)";
+        statusMode.textContent = "JavaScript Scripting";
+        editorUnified.value = editorUnified.dataset.jsCode || STARTERS.js;
+      } else if (lang === "php") {
+        tabSingle.textContent = "index.php";
+        langBadge.textContent = "PHP 8.4";
+        statusMode.textContent = "PHP Compiler Engine";
+        editorUnified.value = editorUnified.dataset.phpCode || STARTERS.php;
+      }
+    }
+
+    setOutputView(outputDisplayMode);
+    renderAutofillMenu();
+    updateLineNumbers();
+    updateCursorInfo();
+    saveState();
+
+    if (shouldExecute) {
+      executeCode();
+    }
+  }
+
+  function switchEditorTab(targetId) {
+    currentTab = targetId;
+    tabHtml.classList.toggle("active", targetId === "editor-html");
+    tabCss.classList.toggle("active", targetId === "editor-css");
+    tabJs.classList.toggle("active", targetId === "editor-js");
+
+    editorUnified.classList.remove("active");
+    editorHtml.classList.toggle("active", targetId === "editor-html");
+    editorCss.classList.toggle("active", targetId === "editor-css");
+    editorJs.classList.toggle("active", targetId === "editor-js");
+
+    if (targetId === "editor-html") langBadge.textContent = "HTML5";
+    if (targetId === "editor-css") langBadge.textContent = "CSS3";
+    if (targetId === "editor-js") langBadge.textContent = "JavaScript";
+
+    updateLineNumbers();
+    updateCursorInfo();
+    getActiveEditor().focus();
+  }
+
+  function applyLayout(layout) {
+    currentLayout = layout;
+    mainView.className = "layout-" + layout;
+
+    document.querySelectorAll(".layout-btn").forEach(function(b) {
+      b.classList.toggle("active", b.dataset.layout === layout);
+    });
+
+    saveState();
+  }
+
+  // --- DRAGGABLE DIVIDER ---
+  var dragging = false;
+  dividerMain.addEventListener("pointerdown", function(e) {
+    dragging = true;
+    dividerMain.classList.add("dragging");
+    dividerMain.setPointerCapture(e.pointerId);
+    previewFrame.style.pointerEvents = "none";
+  });
+
+  window.addEventListener("pointermove", function(e) {
+    if (!dragging) return;
+    var rect = mainView.getBoundingClientRect();
+    var pct;
+
+    if (currentLayout === "bottom") {
+      pct = ((e.clientY - rect.top) / rect.height) * 100;
+    } else if (currentLayout === "left") {
+      pct = ((e.clientX - rect.left) / rect.width) * 100;
+    } else {
+      pct = ((e.clientX - rect.left) / rect.width) * 100;
+    }
+
+    pct = Math.min(80, Math.max(20, pct));
+    mainView.style.setProperty("--split", pct + "%");
+  });
+
+  function stopDrag() {
+    if (dragging) {
+      dragging = false;
+      dividerMain.classList.remove("dragging");
+      previewFrame.style.pointerEvents = "";
+    }
+  }
+
+  window.addEventListener("pointerup", stopDrag);
+  window.addEventListener("pointercancel", stopDrag);
+
+  // --- TEXTAREA EVENTS (WITH AUTO-RUN & TYPING AUTO-FILL SHORTCUTS) ---
+  var editors = [editorUnified, editorHtml, editorCss, editorJs];
+  editors.forEach(function(ta) {
+    ta.addEventListener("input", function() {
+      syncCurrentCodeToMemory();
+      saveState();
+      updateLineNumbers();
+      updateCursorInfo();
+      // Auto-run trigger on typing!
+      scheduleAutoRun();
+      // Check IntelliSense Autocomplete
+      checkAutocomplete(ta);
+    });
+
+    ta.addEventListener("scroll", function() {
+      lineNumbers.scrollTop = this.scrollTop;
+    });
+
+    ta.addEventListener("click", function() {
+      updateCursorInfo();
+      closeAutocomplete();
+    });
+
+    ta.addEventListener("keyup", function(e) {
+      if (e.key.startsWith("Arrow") || e.key === "Home" || e.key === "End") {
+        updateCursorInfo();
+      }
+    });
+
+    ta.addEventListener("keydown", function(e) {
+      // Autocomplete Keyboard Navigation
+      if (autocompleteActive && autocompleteItems.length > 0) {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          autocompleteIndex = (autocompleteIndex + 1) % autocompleteItems.length;
+          renderAutocompleteItems();
+          return;
+        }
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          autocompleteIndex = (autocompleteIndex - 1 + autocompleteItems.length) % autocompleteItems.length;
+          renderAutocompleteItems();
+          return;
+        }
+        if (e.key === "Enter" || e.key === "Tab") {
+          e.preventDefault();
+          selectAutocompleteItem(autocompleteItems[autocompleteIndex]);
+          return;
+        }
+        if (e.key === "Escape") {
+          e.preventDefault();
+          closeAutocomplete();
+          return;
+        }
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        e.preventDefault();
+        executeCode();
+        return;
+      }
+
+      // Tab Key: Indent or Expand auto-fill snippets
+      if (e.key === "Tab") {
+        var s = this.selectionStart;
+        var en = this.selectionEnd;
+        var textBefore = this.value.substring(0, s);
+        
+        var snippets = {
+          "!": `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <title>Document</title>\n</head>\n<body>\n  \n</body>\n</html>`,
+          "html": `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <title>Document</title>\n</head>\n<body>\n  \n</body>\n</html>`,
+          "php": `<?php\n\n?>`,
+          "clg": `console.log();`,
+          "log": `console.log();`,
+          "fn": `function () {\n  \n}`,
+          "func": `function () {\n  \n}`,
+          "div": `<div></div>`,
+          "btn": `<button></button>`,
+          "style": `<style>\n  \n</style>`,
+          "script": `<script>\n  \n<\/script>`
+        };
+
+        var matchedKey = null;
+        for (var k in snippets) {
+          if (textBefore.endsWith(k)) {
+            var charBeforeKey = textBefore[textBefore.length - k.length - 1];
+            if (!charBeforeKey || /[\s\n\r;{(\[<]/.test(charBeforeKey) || k === "!") {
+              matchedKey = k;
+              break;
+            }
+          }
+        }
+
+        if (matchedKey) {
+          e.preventDefault();
+          var startPos = s - matchedKey.length;
+          var snippetCode = snippets[matchedKey];
+          this.setRangeText(snippetCode, startPos, en, "end");
+          
+          if (matchedKey === "clg" || matchedKey === "log") {
+            this.selectionStart = this.selectionEnd = startPos + 12;
+          } else if (matchedKey === "php") {
+            this.selectionStart = this.selectionEnd = startPos + 7;
+          } else if (matchedKey === "div") {
+            this.selectionStart = this.selectionEnd = startPos + 5;
+          } else if (matchedKey === "btn") {
+            this.selectionStart = this.selectionEnd = startPos + 8;
+          } else if (matchedKey === "fn" || matchedKey === "func") {
+            this.selectionStart = this.selectionEnd = startPos + 9;
+          }
+
+          syncCurrentCodeToMemory();
+          updateLineNumbers();
+          updateCursorInfo();
+          scheduleAutoRun();
+          return;
+        }
+
+        if (!e.shiftKey) {
+          e.preventDefault();
+          this.setRangeText("  ", s, en, "end");
+          updateLineNumbers();
+          updateCursorInfo();
+        }
+      }
+
+      // Auto-closing brackets and quotes
+      var pairs = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'" };
+      if (pairs[e.key] && this.selectionStart === this.selectionEnd) {
+        var pos = this.selectionStart;
+        var char = pairs[e.key];
+        e.preventDefault();
+        this.setRangeText(e.key + char, pos, pos, "end");
+        this.selectionStart = this.selectionEnd = pos + 1;
+        syncCurrentCodeToMemory();
+        scheduleAutoRun();
+      }
+
+      // Auto-close HTML tags
+      if (e.key === ">" && this.selectionStart === this.selectionEnd) {
+        var curPos = this.selectionStart;
+        var left = this.value.substring(0, curPos);
+        var match = left.match(/<([a-zA-Z0-9\-]+)(?:\s+[^>]*)?$/);
+        var voidTags = ["br", "img", "hr", "input", "meta", "link"];
+        if (match && voidTags.indexOf(match[1].toLowerCase()) === -1) {
+          e.preventDefault();
+          var tag = match[1];
+          var closeTag = ">" + "</" + tag + ">";
+          this.setRangeText(closeTag, curPos, curPos, "end");
+          this.selectionStart = this.selectionEnd = curPos + 1;
+          syncCurrentCodeToMemory();
+          scheduleAutoRun();
+        }
+      }
+    });
+  });
+
+  // --- INTELLISENSE AUTOCOMPLETE SYSTEM ---
+  var HTML_TAGS_DATA = [
+    { tag: "h1", desc: "Heading 1", insert: "<h1>$CURSOR$</h1>" },
+    { tag: "h2", desc: "Heading 2", insert: "<h2>$CURSOR$</h2>" },
+    { tag: "h3", desc: "Heading 3", insert: "<h3>$CURSOR$</h3>" },
+    { tag: "h4", desc: "Heading 4", insert: "<h4>$CURSOR$</h4>" },
+    { tag: "h5", desc: "Heading 5", insert: "<h5>$CURSOR$</h5>" },
+    { tag: "h6", desc: "Heading 6", insert: "<h6>$CURSOR$</h6>" },
+    { tag: "header", desc: "Header landmark", insert: "<header>\n  $CURSOR$\n</header>" },
+    { tag: "hr", desc: "Horizontal divider", insert: "<hr>\n$CURSOR$" },
+    { tag: "head", desc: "Document head", insert: "<head>\n  $CURSOR$\n</head>" },
+    { tag: "html", desc: "HTML root element", insert: "<html lang=\"en\">\n$CURSOR$\n</html>" },
+    { tag: "div", desc: "Content division", insert: "<div>$CURSOR$</div>" },
+    { tag: "span", desc: "Inline text container", insert: "<span>$CURSOR$</span>" },
+    { tag: "p", desc: "Paragraph", insert: "<p>$CURSOR$</p>" },
+    { tag: "button", desc: "Clickable button", insert: "<button type=\"button\">$CURSOR$</button>" },
+    { tag: "input", desc: "Form input", insert: "<input type=\"text\" placeholder=\"$CURSOR$\">" },
+    { tag: "form", desc: "Form container", insert: "<form>\n  $CURSOR$\n</form>" },
+    { tag: "table", desc: "Data table", insert: "<table>\n  <tr><th>$CURSOR$</th></tr>\n</table>" },
+    { tag: "tr", desc: "Table row", insert: "<tr>$CURSOR$</tr>" },
+    { tag: "td", desc: "Table data cell", insert: "<td>$CURSOR$</td>" },
+    { tag: "th", desc: "Table header cell", insert: "<th>$CURSOR$</th>" },
+    { tag: "ul", desc: "Unordered list", insert: "<ul>\n  <li>$CURSOR$</li>\n</ul>" },
+    { tag: "ol", desc: "Ordered list", insert: "<ol>\n  <li>$CURSOR$</li>\n</ol>" },
+    { tag: "li", desc: "List item", insert: "<li>$CURSOR$</li>" },
+    { tag: "a", desc: "Anchor link", insert: "<a href=\"#\">$CURSOR$</a>" },
+    { tag: "img", desc: "Image", insert: "<img src=\"$CURSOR$\" alt=\"\">" },
+    { tag: "section", desc: "Section block", insert: "<section>\n  $CURSOR$\n</section>" },
+    { tag: "article", desc: "Article block", insert: "<article>\n  $CURSOR$\n</article>" },
+    { tag: "footer", desc: "Footer landmark", insert: "<footer>\n  $CURSOR$\n</footer>" },
+    { tag: "nav", desc: "Navigation block", insert: "<nav>\n  $CURSOR$\n</nav>" },
+    { tag: "main", desc: "Main content", insert: "<main>\n  $CURSOR$\n</main>" },
+    { tag: "script", desc: "JavaScript script block", insert: "<script>\n  $CURSOR$\n<\/script>" },
+    { tag: "style", desc: "CSS style block", insert: "<style>\n  $CURSOR$\n</style>" },
+    { tag: "pre", desc: "Preformatted text", insert: "<pre>$CURSOR$</pre>" },
+    { tag: "code", desc: "Code block", insert: "<code>$CURSOR$</code>" },
+    { tag: "dialog", desc: "Modal dialog", insert: "<dialog>\n  $CURSOR$\n</dialog>" },
+    { tag: "canvas", desc: "Graphics canvas", insert: "<canvas id=\"canvas\" width=\"400\" height=\"300\">$CURSOR$</canvas>" },
+    { tag: "textarea", desc: "Textarea input", insert: "<textarea rows=\"4\">$CURSOR$</textarea>" },
+    { tag: "select", desc: "Option dropdown", insert: "<select>\n  <option>$CURSOR$</option>\n</select>" },
+    { tag: "label", desc: "Form label", insert: "<label>$CURSOR$</label>" }
+  ];
+
+  var JS_SNIPPETS_DATA = [
+    { tag: "console.log", desc: "Log to console", insert: "console.log($CURSOR$);" },
+    { tag: "document.getElementById", desc: "Element by ID", insert: "document.getElementById(\"$CURSOR$\")" },
+    { tag: "document.querySelector", desc: "Query single element", insert: "document.querySelector(\"$CURSOR$\")" },
+    { tag: "addEventListener", desc: "Event listener", insert: "addEventListener(\"$CURSOR$\", (e) => {\n  \n});" },
+    { tag: "fetch", desc: "Fetch API request", insert: "fetch(\"$CURSOR$\")\n  .then(res => res.json())\n  .then(data => console.log(data));" },
+    { tag: "function", desc: "Declare function", insert: "function $CURSOR$() {\n  \n}" },
+    { tag: "setTimeout", desc: "Delayed callback", insert: "setTimeout(() => {\n  $CURSOR$\n}, 1000);" },
+    { tag: "setInterval", desc: "Periodic timer", insert: "setInterval(() => {\n  $CURSOR$\n}, 1000);" }
+  ];
+
+  var PHP_SNIPPETS_DATA = [
+    { tag: "echo", desc: "Echo string", insert: "echo \"$CURSOR$\";" },
+    { tag: "print_r", desc: "Print array", insert: "print_r($CURSOR$);" },
+    { tag: "var_dump", desc: "Dump variable debug", insert: "var_dump($CURSOR$);" },
+    { tag: "count", desc: "Count array", insert: "count($CURSOR$)" },
+    { tag: "strlen", desc: "String length", insert: "strlen($CURSOR$)" },
+    { tag: "explode", desc: "Split string", insert: "explode(\" \", $CURSOR$)" },
+    { tag: "implode", desc: "Join array", insert: "implode(\", \", $CURSOR$)" },
+    { tag: "json_encode", desc: "Encode JSON", insert: "json_encode($CURSOR$)" },
+    { tag: "json_decode", desc: "Decode JSON", insert: "json_decode($CURSOR$, true)" },
+    { tag: "foreach", desc: "Foreach loop", insert: "foreach ($CURSOR$ as $item) {\n  \n}" },
+    { tag: "function", desc: "PHP function", insert: "function $CURSOR$() {\n  \n}" }
+  ];
+
+  var autocompletePopup = document.getElementById("autocomplete-popup");
+  var autocompleteList = document.getElementById("autocomplete-list");
+  var autocompleteActive = false;
+  var autocompleteItems = [];
+  var autocompleteIndex = 0;
+  var currentTargetEditor = null;
+  var autocompleteReplaceLength = 0;
+
+  function checkAutocomplete(ta) {
+    currentTargetEditor = ta;
+    var s = ta.selectionStart;
+    var textBefore = ta.value.substring(0, s);
+    
+    // Check if user is typing an HTML tag, e.g. <h or <
+    var htmlMatch = textBefore.match(/<([a-zA-Z0-9]*)$/);
+    if (htmlMatch && (currentLang === "web" || currentTab === "editor-html")) {
+      var query = htmlMatch[1].toLowerCase();
+      autocompleteReplaceLength = htmlMatch[0].length; // includes '<'
+      var matches = HTML_TAGS_DATA.filter(function(t) {
+        return !query || t.tag.toLowerCase().indexOf(query) === 0;
+      });
+
+      if (matches.length > 0) {
+        autocompleteItems = matches.slice(0, 8);
+        autocompleteIndex = 0;
+        autocompleteActive = true;
+        positionAutocomplete(ta);
+        renderAutocompleteItems();
+        return;
+      }
+    }
+
+    // Check JS snippet triggers
+    if (currentLang === "web" || currentTab === "editor-js") {
+      var jsMatch = textBefore.match(/([a-zA-Z0-9_\.]{2,})$/);
+      if (jsMatch) {
+        var jsQuery = jsMatch[1].toLowerCase();
+        autocompleteReplaceLength = jsMatch[0].length;
+        var jsMatches = JS_SNIPPETS_DATA.filter(function(s) {
+          return s.tag.toLowerCase().indexOf(jsQuery) === 0;
+        });
+        if (jsMatches.length > 0) {
+          autocompleteItems = jsMatches.slice(0, 6);
+          autocompleteIndex = 0;
+          autocompleteActive = true;
+          positionAutocomplete(ta);
+          renderAutocompleteItems();
+          return;
+        }
+      }
+    }
+
+    // Check PHP snippet triggers
+    if (currentLang === "php") {
+      var phpMatch = textBefore.match(/([a-zA-Z0-9_]{2,})$/);
+      if (phpMatch) {
+        var phpQuery = phpMatch[1].toLowerCase();
+        autocompleteReplaceLength = phpMatch[0].length;
+        var phpMatches = PHP_SNIPPETS_DATA.filter(function(s) {
+          return s.tag.toLowerCase().indexOf(phpQuery) === 0;
+        });
+        if (phpMatches.length > 0) {
+          autocompleteItems = phpMatches.slice(0, 6);
+          autocompleteIndex = 0;
+          autocompleteActive = true;
+          positionAutocomplete(ta);
+          renderAutocompleteItems();
+          return;
+        }
+      }
+    }
+
+    closeAutocomplete();
+  }
+
+  function positionAutocomplete(ta) {
+    var s = ta.selectionStart;
+    var lines = ta.value.substring(0, s).split("\n");
+    var lineIdx = lines.length;
+    var lineH = 20.6;
+    var topPx = (lineIdx * lineH) - ta.scrollTop + 14;
+    topPx = Math.max(10, Math.min(ta.clientHeight - 240, topPx));
+    autocompletePopup.style.top = topPx + "px";
+    autocompletePopup.style.left = "55px";
+    autocompletePopup.classList.add("open");
+  }
+
+  function renderAutocompleteItems() {
+    autocompleteList.innerHTML = "";
+    autocompleteItems.forEach(function(item, idx) {
+      var row = document.createElement("div");
+      row.className = "autocomplete-item" + (idx === autocompleteIndex ? " selected" : "");
+      
+      var nameSpan = document.createElement("span");
+      nameSpan.className = "tag-name";
+      nameSpan.textContent = item.tag.indexOf("<") === 0 ? item.tag : "<" + item.tag + ">";
+
+      var descSpan = document.createElement("span");
+      descSpan.className = "tag-desc";
+      descSpan.textContent = item.desc;
+
+      row.appendChild(nameSpan);
+      row.appendChild(descSpan);
+
+      row.addEventListener("mousedown", function(e) {
+        e.preventDefault();
+        selectAutocompleteItem(item);
+      });
+
+      autocompleteList.appendChild(row);
+    });
+  }
+
+  function selectAutocompleteItem(item) {
+    var ta = currentTargetEditor || getActiveEditor();
+    var s = ta.selectionStart;
+    var startPos = Math.max(0, s - autocompleteReplaceLength);
+    var insertCode = item.insert;
+    var cursorOffset = insertCode.indexOf("$CURSOR$");
+    
+    if (cursorOffset !== -1) {
+      insertCode = insertCode.replace("$CURSOR$", "");
+    }
+
+    ta.setRangeText(insertCode, startPos, s, "end");
+    if (cursorOffset !== -1) {
+      ta.selectionStart = ta.selectionEnd = startPos + cursorOffset;
+    }
+
+    closeAutocomplete();
+    syncCurrentCodeToMemory();
+    updateLineNumbers();
+    updateCursorInfo();
+    scheduleAutoRun();
+  }
+
+  function closeAutocomplete() {
+    autocompleteActive = false;
+    autocompleteItems = [];
+    autocompletePopup.classList.remove("open");
+  }
+
+  // --- ACTIONS ---
+  // Manual Run
+  document.getElementById("btn-run").addEventListener("click", executeCode);
+
+  // Auto-run checkbox toggle
+  chkAutoRun.addEventListener("change", function() {
+    autoRunEnabled = this.checked;
+    updateAutoRunUI();
+    saveState();
+    if (autoRunEnabled) {
+      executeCode();
+    }
+  });
+
+  // Reset
+  document.getElementById("btn-reset").addEventListener("click", function() {
+    if (confirm("Reset current editor code to starter template?")) {
+      if (currentLang === "web") {
+        if (webMode === "single") {
+          editorUnified.value = STARTERS.web_single;
+        } else {
+          editorHtml.value = STARTERS.web_split_html;
+          editorCss.value = STARTERS.web_split_css;
+          editorJs.value = STARTERS.web_split_js;
+        }
+      } else {
+        editorUnified.value = STARTERS[currentLang] || "";
+      }
+      syncCurrentCodeToMemory();
+      updateLineNumbers();
+      updateCursorInfo();
+      executeCode();
+    }
+  });
+
+  document.getElementById("btn-clear-console").addEventListener("click", clearConsole);
+
+  document.querySelectorAll(".lang-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      switchLang(this.dataset.lang, true);
+    });
+  });
+
+  btnModeSingle.addEventListener("click", function() {
+    webMode = "single";
+    btnModeSingle.classList.add("active");
+    btnModeSplit.classList.remove("active");
+    switchLang("web", true);
+  });
+
+  btnModeSplit.addEventListener("click", function() {
+    webMode = "split";
+    btnModeSplit.classList.add("active");
+    btnModeSingle.classList.remove("active");
+    switchLang("web", true);
+  });
+
+  tabHtml.addEventListener("click", function() { switchEditorTab("editor-html"); });
+  tabCss.addEventListener("click", function() { switchEditorTab("editor-css"); });
+  tabJs.addEventListener("click", function() { switchEditorTab("editor-js"); });
+
+  tabViewPreview.addEventListener("click", function() { setOutputView("preview"); });
+  tabViewBoth.addEventListener("click", function() { setOutputView("both"); });
+  tabViewConsole.addEventListener("click", function() { setOutputView("console"); });
+
+  document.querySelectorAll(".layout-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      applyLayout(this.dataset.layout);
+    });
+  });
+
+  loadState();
+  executeCode();
+})();
+</script>
+</body>
+</html>
